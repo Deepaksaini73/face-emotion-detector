@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview-container');
+            const imagePreview = document.getElementById('image-preview');
+            const fileName = document.getElementById('file-name');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    fileName.textContent = file.name;
+                    preview.classList.add('show');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeImage() {
+            const fileInput = document.getElementById('file-upload');
+            const preview = document.getElementById('preview-container');
+            const imagePreview = document.getElementById('image-preview');
+            const fileName = document.getElementById('file-name');
+            
+            fileInput.value = '';
+            imagePreview.src = '';
+            fileName.textContent = '';
+            preview.classList.remove('show');
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Emotion Predictor</h1>
+        <div class="upload-container">
+            <form method="post" enctype="multipart/form-data">
+                <div class="file-input-container">
+                    <label for="file-upload" class="file-input-label">
+                        Choose Image
+                        <input id="file-upload" type="file" name="file" accept="image/*" required onchange="handleFileSelect(event)">
+                    </label>
+                </div>
+                <div id="preview-container" class="preview-container">
+                    <img id="image-preview" class="image-preview" src="" alt="Preview">
+                    <button type="button" class="remove-image" onclick="removeImage()">×</button>
+                    <div id="file-name" class="file-name"></div>
+                </div>
+                <button type="submit" class="submit-btn">Predict Emotion</button>
+            </form>
+            
+            {% if prediction %}
+            <div class="result">
+                <h2>Result</h2>
+                <div class="prediction">{{ prediction.upper() }}</div>
+                <div class="confidence">Confidence: {{ "%.2f"|format(confidence*100) }}%</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
