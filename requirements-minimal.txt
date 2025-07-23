@@ -1,0 +1,7 @@
+# Minimal requirements for testing
+flask
+tensorflow
+numpy
+gunicorn
+Pillow
+Werkzeug
